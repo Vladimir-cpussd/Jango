@@ -1,0 +1,19 @@
+services:
+  redis:
+    image: redis:7-alpine
+    container_name: chapter17-redis
+    ports:
+      - "6379:6379"
+
+  daphne:
+    build: .
+    container_name: chapter17-daphne
+    volumes:
+      - .:/code
+    command: sh -c "cd /code/educa && daphne -b 0.0.0.0 -p 9001 educa.asgi:application"
+    environment:
+      - DJANGO_SETTINGS_MODULE=educa.settings.local
+    ports:
+      - "9001:9001"
+    depends_on:
+      - redis
